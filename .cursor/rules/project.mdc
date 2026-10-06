@@ -1,0 +1,76 @@
+---
+description: Engineering rules for the bounded agent development loop
+globs:
+alwaysApply: true
+---
+
+# Repository Engineering Rules
+
+This repository demonstrates bounded AI-assisted software engineering.
+
+Before modifying code:
+
+1. Read `AGENTS.md`.
+2. Identify the authoritative contract or acceptance criteria.
+3. Do not invent requirements that are absent from those artifacts.
+4. Prefer the smallest implementation that satisfies the contract.
+5. Keep orchestration, verification and application code separated.
+
+## Python
+
+- Use Python 3.12-compatible code.
+- Use type hints.
+- Prefer small functions.
+- Use Pydantic models for API request/response schemas.
+- Use pathlib for filesystem paths.
+- Do not use shell=True in subprocess calls.
+- Handle subprocess timeouts explicitly.
+
+## Application
+
+Application code belongs in `app/`.
+
+The FastAPI layer should remain deliberately small.
+
+## Agent Harness
+
+Agent reasoning and orchestration belong in `agent/`.
+
+The LangGraph graph coordinates state transitions.
+
+Do not hide important workflow decisions inside prompts.
+
+Retry limits, escalation conditions and execution status
+must be represented explicitly in code.
+
+## Workspace Isolation
+
+Workspace lifecycle logic belongs in `workspace/`.
+
+Agent-generated changes must only be written inside an
+isolated Git worktree.
+
+The implementation agent must never write directly to the
+developer's active working tree.
+
+## Verification
+
+Deterministic verification belongs in `verification/`,
+`tests/`, and CI.
+
+The agent orchestration layer may invoke verification,
+but it must not own or modify verification rules.
+
+LLM judgement is not sufficient evidence of correctness.
+
+Tests and contracts must never be weakened to make
+generated code pass.
+
+## Security
+
+Never expose environment variables, API keys or secrets to generated
+prompts unnecessarily.
+
+Never allow generated code to operate directly on the main Git worktree.
+
+Do not automatically merge agent-generated changes.
