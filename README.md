@@ -17,8 +17,10 @@ The project separates agent autonomy from the controls required to trust it:
 - Risk-based human review
 - Audit evidence for agent runs
 
-The implementation agent cannot modify its own contracts, tests or
-verification logic.
+The implementation agent cannot modify its own contracts, tests or verification logic. The model does not receive direct shell or repository write access. It returns structured file-change proposals, which the harness validates before applying permitted changes inside the Git worktree.
+
+The Git worktree provides source-control and workspace isolation; it is not
+intended to be an operating-system security sandbox.
 
 ## Development Flow
 
@@ -109,7 +111,7 @@ Copy the example environment file:
 ```text
 cp .env.example .env
 ```
-Configure the provider values:
+Configure the Antropic provider values: (In case of openai, we will have to change the Model.py also)
 ```text
 ANTHROPIC_API_KEY=
 LLM_MODEL=
@@ -120,16 +122,17 @@ python -m agent.run contracts/feature.yaml
 ```
 A real run:
 1. creates an isolated Git worktree;
-2. performs initial verification;
-3. builds scoped model context;
-4. asks the model to implement the requirement;
-5. permits changes only to approved application files;
+2. builds scoped model context from the feature contract and repository rules;
+3. asks the model to propose the implementation;
+4. validates that proposed writes stay within approved paths;
+5. applies permitted changes inside the worktree;
 6. runs deterministic verification;
-7. feeds failures back for another bounded attempt;
-8. stops after the configured retry limit;
+7. feeds verification failures back into the next bounded attempt;
+8. stops when verification passes or the retry limit is reached;
 9. applies the risk gate;
 10. leaves the generated implementation on a separate Git branch.
-The harness never automatically merges or deploys generated code.
+
+The harness as of now, would not automatically merges or deploys generated code.
 
 ### Verification
 The current verification layer includes:
@@ -179,5 +182,5 @@ autonomy trustworthy.
 ## Important
 For instructions on changing the demo requirement like adding a completly new feature or making changes in existing feature without changing the code, see
 ```text
-FEATURE_GUIDE.md
+Feature_Guide.md
 ```
