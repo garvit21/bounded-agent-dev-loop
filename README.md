@@ -94,7 +94,7 @@ No LLM credentials are required for dry-run mode:
 ```text
 python -m agent.run contracts/feature.yaml --dry-run
 ```
-his displays:
+This displays:
 - requested outcome
 - permitted write paths
 - protected repository areas
