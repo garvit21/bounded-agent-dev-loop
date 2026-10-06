@@ -1,0 +1,65 @@
+task_id: inventory-reservation
+
+title: Add inventory reservation endpoint
+
+goal: >
+  Add an API endpoint that allows a client to reserve
+  a quantity of an inventory item while supporting
+  idempotent retries.
+
+allowed_write_paths:
+  - app/main.py
+  - app/models.py
+
+protected_paths:
+  - contracts/
+  - tests/
+  - verification/
+  - workspace/
+  - agent/
+  - .github/
+  - AGENTS.md
+  - .cursor/
+
+endpoint:
+  method: POST
+  path: /inventory/reservations
+
+request:
+  required_header:
+    name: Idempotency-Key
+    type: string
+
+  body:
+    item_id:
+      type: string
+      required: true
+
+    quantity:
+      type: integer
+      minimum: 1
+      required: true
+
+acceptance_criteria:
+  - A valid reservation returns HTTP 201.
+  - The response contains reservation_id, item_id, quantity and status.
+  - status must be "reserved".
+  - quantity must be greater than zero.
+  - Missing or invalid quantity returns HTTP 422.
+  - Unknown inventory items return HTTP 404.
+  - Repeating the same request with the same Idempotency-Key returns the same reservation rather than creating a duplicate.
+  - Existing application behaviour must remain unchanged.
+  - The implementation must not modify contracts, tests or verification logic.
+
+known_inventory:
+  item-001:
+    available_quantity: 10
+  item-002:
+    available_quantity: 5
+
+risk:
+  level: medium
+  requires_human_review: true
+  reasons:
+    - Modifies inventory state.
+    - Introduces idempotency behaviour.

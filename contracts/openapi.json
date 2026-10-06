@@ -1,0 +1,89 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+      "title": "Inventory Reservation Contract",
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/inventory/reservations": {
+        "post": {
+          "summary": "Reserve inventory",
+          "parameters": [
+            {
+              "name": "Idempotency-Key",
+              "in": "header",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "item_id",
+                    "quantity"
+                  ],
+                  "properties": {
+                    "item_id": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Reservation created",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "required": [
+                      "reservation_id",
+                      "item_id",
+                      "quantity",
+                      "status"
+                    ],
+                    "properties": {
+                      "reservation_id": {
+                        "type": "string"
+                      },
+                      "item_id": {
+                        "type": "string"
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "status": {
+                        "type": "string",
+                        "const": "reserved"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Inventory item not found"
+            },
+            "422": {
+              "description": "Request validation failed"
+            }
+          }
+        }
+      }
+    }
+  }
