@@ -139,8 +139,40 @@ Ruff
 mypy
 ```
 
-```text
-```
+The model does not decide whether its own implementation is correct.
+Verification is performed independently by the harness.
+Testing the Harness
+The repository includes unit and integration tests for:
+- workspace isolation
+- context construction
+- deterministic verification
+- implementation write boundaries
+- risk evaluation
+- LangGraph orchestration
+- CLI behaviour
+- audit recording
+- mocked end-to-end execution
+The full mocked end-to-end test requires no API key.
+Repository Structure
 
 ```text
+agent/          Agent state, context, implementation and orchestration
+app/            Application code the agent may modify
+audit/          Run evidence recording
+contracts/      Human-authored requirement and API contract
+tests/          Independent acceptance and harness tests
+verification/   Deterministic verification
+workspace/      Git worktree isolation
+.cursor/        Repository-level agent rules
+.github/        CI workflow
+```
+Design Principle
+The central idea is simple:
+Increase what the agent can own only when the surrounding context,
+permissions, verification and feedback loops make that additional
+autonomy trustworthy.
+
+For instructions on changing the demo requirement like adding a completly new feature or making changes in existing feature without changing the code, see
+```text
+FEATURE_GUIDE.md
 ```
