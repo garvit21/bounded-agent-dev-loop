@@ -2,7 +2,6 @@ from fastapi import FastAPI
 
 from app.models import HealthResponse
 
-
 app = FastAPI(
     title="Bounded Agent Development Loop",
     version="0.1.0",
