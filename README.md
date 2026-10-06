@@ -77,11 +77,12 @@ The purpose of the agent run is to create the implementation inside an
 isolated Git worktree and make the acceptance tests pass without modifying
 the tests or contracts.
 
-Quick Start
-Requirements
+##Quick Start
+###Requirements
 - Python 3.12+
 - Git
 Create the environment:
+
 ```text
 python3.12 -m venv .venv
 source .venv/bin/activate
@@ -89,7 +90,7 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
-Inspect the Workflow Without an API Key
+###Inspect the Workflow Without an API Key
 No LLM credentials are required for dry-run mode:
 ```text
 python -m agent.run contracts/feature.yaml --dry-run
@@ -103,7 +104,7 @@ This displays:
 - risk classification
 No model is called and no source files are changed.
 
-Run With an LLM
+###Run With an LLM
 Copy the example environment file:
 ```text
 cp .env.example .env
@@ -129,7 +130,8 @@ A real run:
 9. applies the risk gate;
 10. leaves the generated implementation on a separate Git branch.
 The harness never automatically merges or deploys generated code.
-Verification
+
+###Verification
 The current verification layer includes:
 
 ```text
@@ -141,7 +143,8 @@ mypy
 
 The model does not decide whether its own implementation is correct.
 Verification is performed independently by the harness.
-Testing the Harness
+
+###Testing the Harness
 The repository includes unit and integration tests for:
 - workspace isolation
 - context construction
@@ -153,7 +156,8 @@ The repository includes unit and integration tests for:
 - audit recording
 - mocked end-to-end execution
 The full mocked end-to-end test requires no API key.
-Repository Structure
+
+###Repository Structure
 
 ```text
 agent/          Agent state, context, implementation and orchestration
@@ -166,12 +170,13 @@ workspace/      Git worktree isolation
 .cursor/        Repository-level agent rules
 .github/        CI workflow
 ```
-Design Principle
+###Design Principle
 The central idea is simple:
 Increase what the agent can own only when the surrounding context,
 permissions, verification and feedback loops make that additional
 autonomy trustworthy.
 
+##Important
 For instructions on changing the demo requirement like adding a completly new feature or making changes in existing feature without changing the code, see
 ```text
 FEATURE_GUIDE.md
