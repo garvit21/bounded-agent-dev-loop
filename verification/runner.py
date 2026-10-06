@@ -5,7 +5,6 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-
 DEFAULT_CHECK_TIMEOUT_SECONDS = 60
 
 
